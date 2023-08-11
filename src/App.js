@@ -62,6 +62,17 @@ export default function App() {
         <NumResult movies={movies} />
       </Navbar>
       <Main>
+        {/*  V2 element versiyon
+       <Box element={<MovieList movies={movies} />} />
+        <Box
+          element={
+            <>
+              <WatchedSummary watched={watched} />
+              <WatchedMoviesList watched={watched} />
+            </>
+          }
+        /> */}
+        {/* V1 children kullanılan versiyon prop olarak */}
         <Box>
           <MovieList movies={movies} />
         </Box>
@@ -112,6 +123,20 @@ const Main = ({ children }) => {
   return <main className="main">{children}</main>;
 };
 
+// V2 Element kullanılan versiyon
+// const Box = ({ element }) => {
+//   const [isOpen, setIsOpen] = useState(true);
+//   return (
+//     <div className="box">
+//       <button className="btn-toggle" onClick={() => setIsOpen((open) => !open)}>
+//         {isOpen ? "–" : "+"}
+//       </button>
+//       {isOpen && element}
+//     </div>
+//   );
+// };
+
+// V1 children kullanılan versiyonu en çok kullanılan versiyon
 const Box = ({ children }) => {
   const [isOpen, setIsOpen] = useState(true);
   return (
@@ -123,7 +148,6 @@ const Box = ({ children }) => {
     </div>
   );
 };
-
 // Önceki list box ile aynı olduğu için yeniden kullanılabilir bir Box yaratıldı.
 // const WatchedBox = () => {
 //   const [watched, setWatched] = useState(tempWatchedData);
