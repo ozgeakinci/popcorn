@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 const tempMovieData = [
   {
@@ -46,20 +46,19 @@ const tempWatchedData = [
     userRating: 9,
   },
 ];
+
 const KEY = "e0667f68";
 
 const average = (arr) =>
   arr.reduce((acc, cur, i, arr) => acc + cur / arr.length, 0);
 
 export default function App() {
-  const [movies, setMovies] = useState([]);
-  const [watched, setWatched] = useState([]);
+  const [movies, setMovies] = useState(tempMovieData);
+  const [watched, setWatched] = useState(tempWatchedData);
 
-  useEffect(() => {
-    fetch(`http://www.omdbapi.com/?apikey=${KEY}&s=godfather`)
-      .then((res) => res.json())
-      .then((data) => setMovies(data.Search));
-  }, []);
+  fetch(`http://www.omdbapi.com/?apikey=${KEY}&s=interstellar`)
+    .then((res) => res.json())
+    .then((data) => console.log(data.Search));
 
   return (
     <>
@@ -147,7 +146,7 @@ const Main = ({ children }) => {
 const Box = ({ children }) => {
   const [isOpen, setIsOpen] = useState(true);
   return (
-    <div className="box scrollable-content">
+    <div className="box">
       <button className="btn-toggle" onClick={() => setIsOpen((open) => !open)}>
         {isOpen ? "–" : "+"}
       </button>

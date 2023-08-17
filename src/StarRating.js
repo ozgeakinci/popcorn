@@ -15,15 +15,6 @@ const starContainerStyle = {
 
 //Tip kontorolü sağlamak için TypeScript yerine bunu kullanabiliriz. Çok daha fazla kullanılan bir şey
 
-StarRating.propTypes = {
-  maxRating: PropTypes.number,
-  defaultRating: PropTypes.number,
-  color: PropTypes.string,
-  size: PropTypes.number,
-  messages: PropTypes.array,
-  onSetRating: PropTypes.func,
-};
-
 const StarRating = ({
   maxRating = 5,
   color = "#fcc419",
@@ -70,6 +61,14 @@ const StarRating = ({
 };
 
 export default StarRating;
+
+StarRating.propTypes = {
+  maxRating: PropTypes.number,
+  color: PropTypes.string,
+  size: PropTypes.number,
+  messages: PropTypes.array,
+  onSetRating: PropTypes.func,
+};
 
 const Star = ({ onRate, full, onMouseEnter, onMouseLeave, color, size }) => {
   const starStyle = {
