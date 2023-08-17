@@ -54,11 +54,32 @@ const average = (arr) =>
 export default function App() {
   const [movies, setMovies] = useState([]);
   const [watched, setWatched] = useState([]);
+  const [isLoding, setIsLoding] = useState(false);
+  const [error, setError] = useState("");
 
   useEffect(() => {
-    fetch(`http://www.omdbapi.com/?apikey=${KEY}&s=godfather`)
-      .then((res) => res.json())
-      .then((data) => setMovies(data.Search));
+    const fetchMovies = async () => {
+      try {
+        setIsLoding(true);
+        const res = await fetch(
+          `http://www.omdbapi.com/?apikey=${KEY}&s=godfather`
+        );
+
+        // Burada eğer response başarılı dönmezse gösterilecek hata mevcut
+        if (!res.ok)
+          throw new Error("Something went wrong with fetching movies");
+        const data = await res.json();
+        // Eğer data false döndüyse özellikle loglayıp bu hatayı aldığımızda kendi yönümüze çevirmek için bunu uygulabiliriz.
+        if (data.Response === "False") throw new Error("Movie not found");
+        setMovies(data.Search);
+      } catch (err) {
+        console.error(err.message);
+        setError(err.message);
+      } finally {
+        setIsLoding(false);
+      }
+    };
+    fetchMovies();
   }, []);
 
   return (
@@ -81,7 +102,12 @@ export default function App() {
         /> */}
         {/* V1 children kullanılan versiyon prop olarak */}
         <Box>
-          <MovieList movies={movies} />
+          {/* Burası sadece loding gösterir. Bizim istediğimiz error mesajınıda almak o zaman yeniden tanımlayacağız. */}
+          {/* {isLoding ? <Loader /> : <MovieList movies={movies} />} */}
+
+          {isLoding && <Loader />}
+          {!isLoding && !error && <MovieList movies={movies} />}
+          {error && <ErrorMessage message={error} />}
         </Box>
 
         <Box>
@@ -102,6 +128,18 @@ const Logo = () => {
       <span role="img">🍿</span>
       <h1>usePopcorn</h1>
     </div>
+  );
+};
+
+const Loader = () => {
+  return <p className="loader"> Loading...</p>;
+};
+
+const ErrorMessage = ({ message }) => {
+  return (
+    <p className="error">
+      <span className="error"> ⛔️ {message}</span>
+    </p>
   );
 };
 
