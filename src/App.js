@@ -52,17 +52,38 @@ const average = (arr) =>
   arr.reduce((acc, cur, i, arr) => acc + cur / arr.length, 0);
 
 export default function App() {
+  const [query, setQuery] = useState("");
   const [movies, setMovies] = useState([]);
   const [watched, setWatched] = useState([]);
   const [isLoding, setIsLoding] = useState(false);
   const [error, setError] = useState("");
+  const tempQuery = "godfather";
+  //useEffek kullanımı test
+  // useEffect(() => {
+  //   console.log("Bağımlılığı olmadığından her renderda çalışır");
+  // });
+
+  // useEffect(() => {
+  //   console.log("Bir kez çalışır ancak farklı bir bağımlılık varsa çalışmaz");
+  // }, []);
+
+  // console.log("ilk çalışır");
+
+  // useEffect(() => {
+  //   console.log(
+  //     "Seach kısmı querye bağlı olduğundan o kısma birşeyler girmeye çalışırsak çalışır."
+  //   );
+  // }, [query]);
 
   useEffect(() => {
     const fetchMovies = async () => {
       try {
+        // Loding beklerken çalışması için
         setIsLoding(true);
+        // Verileri almaya başlamadan önce her zaman erroru sıfırlıyoruzç
+        setError("");
         const res = await fetch(
-          `http://www.omdbapi.com/?apikey=${KEY}&s=godfather`
+          `http://www.omdbapi.com/?apikey=${KEY}&s=${query}`
         );
 
         // Burada eğer response başarılı dönmezse gösterilecek hata mevcut
@@ -79,14 +100,22 @@ export default function App() {
         setIsLoding(false);
       }
     };
+
+    // Burada fonksiyonu çalıştırmadan önce ekranda movie not found yazmaması için çünkü fonksiyon birşey yazmasakta çalışır ve boş array olduğundan not found uyarısı alırız
+    if (query.length < 3) {
+      setMovies([]);
+      setError("");
+      return;
+    }
+
     fetchMovies();
-  }, []);
+  }, [query]);
 
   return (
     <>
       <Navbar>
         <Logo />
-        <Search />
+        <Search query={query} setQuery={setQuery} />
         <NumResult movies={movies} />
       </Navbar>
       <Main>
@@ -150,9 +179,7 @@ const NumResult = ({ movies }) => {
     </p>
   );
 };
-const Search = () => {
-  const [query, setQuery] = useState("");
-
+const Search = ({ query, setQuery }) => {
   return (
     <input
       className="search"
