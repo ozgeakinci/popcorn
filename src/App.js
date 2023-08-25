@@ -88,6 +88,10 @@ export default function App() {
     setSelectedId(null);
   };
 
+  const handleAddMovie = (movie) => {
+    setWatched((movies) => [...movies, movie]);
+  };
+
   useEffect(() => {
     const fetchMovies = async () => {
       try {
@@ -160,11 +164,12 @@ export default function App() {
             <MovieDetails
               selectedId={selectedId}
               onCloseMovie={handleCloseMovie}
+              onAddMovie={handleAddMovie}
             />
           ) : (
             <>
-              <WatchedMoviesList watched={watched} />
               <WatchedSummary watched={watched} />
+              <WatchedMoviesList watched={watched} />
             </>
           )}
         </Box>
@@ -289,9 +294,10 @@ const Movie = ({ movie, onSelectedId }) => {
   );
 };
 
-const MovieDetails = ({ selectedId, onCloseMovie }) => {
+const MovieDetails = ({ selectedId, onCloseMovie, onAddMovie }) => {
   const [movieDetails, setMovieDetails] = useState({});
   const [isLooding, setIsLoding] = useState(false);
+  const [userRating, setUserRating] = useState("");
 
   const {
     Title: title,
@@ -306,6 +312,21 @@ const MovieDetails = ({ selectedId, onCloseMovie }) => {
     Genre: genre,
     imdbRating,
   } = movieDetails;
+
+  const handleAdd = () => {
+    const newMovieList = {
+      imdbID: selectedId,
+      title,
+      year,
+      poster,
+      imdbRating: Number(imdbRating),
+      runtime: Number(imdbRating.slice(" ").at(0)),
+      userRating,
+    };
+    onAddMovie(newMovieList);
+    onCloseMovie();
+    console.log(newMovieList);
+  };
 
   useEffect(() => {
     const getMovieDetails = async () => {
@@ -345,7 +366,14 @@ const MovieDetails = ({ selectedId, onCloseMovie }) => {
           </header>
           <section>
             <div className="rating">
-              <StarRating maxRating={10} size={24} />
+              <StarRating
+                maxRating={10}
+                size={24}
+                onSetRating={setUserRating}
+              />
+              <button className="btn-add" onClick={handleAdd}>
+                + Add to list
+              </button>
             </div>
             <p>
               <em>{plot}</em>
@@ -374,7 +402,7 @@ const WatchedSummary = ({ watched }) => {
         </p>
         <p>
           <span>⭐️</span>
-          <span>{avgImdbRating}</span>
+          <span>{avgImdbRating.toFixed(2)}</span>
         </p>
         <p>
           <span>🌟</span>
@@ -402,8 +430,8 @@ const WatchedMoviesList = ({ watched }) => {
 const WatchedMovie = ({ movie }) => {
   return (
     <li>
-      <img src={movie.Poster} alt={`${movie.Title} poster`} />
-      <h3>{movie.Title}</h3>
+      <img src={movie.poster} alt={`${movie.title} poster`} />
+      <h3>{movie.title}</h3>
       <div>
         <p>
           <span>⭐️</span>

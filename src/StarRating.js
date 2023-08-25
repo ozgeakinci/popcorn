@@ -33,6 +33,7 @@ const StarRating = ({
   };
   const handleRating = (rating) => {
     setRating(rating);
+    onSetRating(rating);
   };
   return (
     <div style={containerStyle}>
