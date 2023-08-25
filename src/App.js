@@ -53,13 +53,14 @@ const average = (arr) =>
   arr.reduce((acc, cur, i, arr) => acc + cur / arr.length, 0);
 
 export default function App() {
-  const [query, setQuery] = useState("");
+  const tempQuery = "godfather";
+  const [query, setQuery] = useState(tempQuery);
   const [movies, setMovies] = useState([]);
   const [watched, setWatched] = useState([]);
   const [isLoding, setIsLoding] = useState(false);
   const [error, setError] = useState("");
   const [selectedId, setSelectedId] = useState(null);
-  const tempQuery = "godfather";
+
   //useEffek kullanımı test
   // useEffect(() => {
   //   console.log("Bağımlılığı olmadığından her renderda çalışır");
@@ -165,6 +166,8 @@ export default function App() {
               selectedId={selectedId}
               onCloseMovie={handleCloseMovie}
               onAddMovie={handleAddMovie}
+              movies={movies}
+              watched={watched}
             />
           ) : (
             <>
@@ -294,10 +297,12 @@ const Movie = ({ movie, onSelectedId }) => {
   );
 };
 
-const MovieDetails = ({ selectedId, onCloseMovie, onAddMovie }) => {
+const MovieDetails = ({ selectedId, onCloseMovie, onAddMovie, watched }) => {
   const [movieDetails, setMovieDetails] = useState({});
   const [isLooding, setIsLoding] = useState(false);
   const [userRating, setUserRating] = useState("");
+
+  const isWatched = watched.map((movies) => movies.imdbID).includes(selectedId);
 
   const {
     Title: title,
@@ -366,14 +371,22 @@ const MovieDetails = ({ selectedId, onCloseMovie, onAddMovie }) => {
           </header>
           <section>
             <div className="rating">
-              <StarRating
-                maxRating={10}
-                size={24}
-                onSetRating={setUserRating}
-              />
-              <button className="btn-add" onClick={handleAdd}>
-                + Add to list
-              </button>
+              {!isWatched ? (
+                <>
+                  <StarRating
+                    maxRating={10}
+                    size={24}
+                    onSetRating={setUserRating}
+                  />
+                  {userRating > 0 && (
+                    <button className="btn-add" onClick={handleAdd}>
+                      + Add to list
+                    </button>
+                  )}
+                </>
+              ) : (
+                <p>You rated with movie</p>
+              )}
             </div>
             <p>
               <em>{plot}</em>
