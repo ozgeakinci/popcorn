@@ -360,6 +360,9 @@ const MovieDetails = ({ selectedId, onCloseMovie, onAddMovie, watched }) => {
 
   useEffect(() => {
     document.title = `Movie | ${title}`;
+
+    //useEffect içerisinde yan etkiyi sıfırlamak için temizleme fonksiyonu en başa dönüyor
+    return () => (document.title = "usePopCorn");
   }, [title]);
 
   return (
