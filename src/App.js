@@ -140,7 +140,7 @@ export default function App() {
       setError("");
       return;
     }
-
+    handleCloseMovie();
     fetchMovies();
   }, [query]);
 
@@ -339,6 +339,8 @@ const MovieDetails = ({ selectedId, onCloseMovie, onAddMovie, watched }) => {
     imdbRating,
   } = movieDetails;
 
+  const [avgRating, setAvgRating] = useState(0);
+
   const handleAdd = () => {
     const newMovieList = {
       imdbID: selectedId,
@@ -351,6 +353,11 @@ const MovieDetails = ({ selectedId, onCloseMovie, onAddMovie, watched }) => {
     };
     onAddMovie(newMovieList);
     onCloseMovie();
+
+    //Burda imdbRatingi avgRating olarak ayarladık ve başlangıç değerinin 0 olmaması için callback kullandık.
+    // setAvgRating(Number(imdbRating));
+    // setAvgRating((avgRating) => (avgRating + userRating) / 2);
+
     // console.log(newMovieList);
   };
   // Escape tuşuya çıkış yapmak için
@@ -435,6 +442,7 @@ const MovieDetails = ({ selectedId, onCloseMovie, onAddMovie, watched }) => {
                 </p>
               )}
             </div>
+            {/* <p>{avgRating}</p> */}
             <p>
               <em>{plot}</em>
             </p>
