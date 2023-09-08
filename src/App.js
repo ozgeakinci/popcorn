@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useReducer, useRef, useState } from "react";
 import StarRating from "./StarRating";
 
 const KEY = "e0667f68";
@@ -311,7 +311,14 @@ const MovieDetails = ({ selectedId, onCloseMovie, onAddMovie, watched }) => {
   const [movieDetails, setMovieDetails] = useState({});
   const [isLooding, setIsLoding] = useState(false);
   const [userRating, setUserRating] = useState("");
-  //  aynı idli filmin tekrar seçilmemsi adına oluşturuldu
+
+  //Kullanucının her rating tıklamasını perde arkasında kontrol eder
+  const countRef = useRef(0);
+  useEffect(() => {
+    if (userRating) countRef.current++;
+  }, [userRating]);
+
+  //  aynı isimli filmin tekrar seçilmemsi adına oluşturuldu
   const isWatched = watched.map((movies) => movies.imdbID).includes(selectedId);
   // Daha önce verdiğimiz puanı seçtiğimiz filimde oluşturmak için
   const watchedUserRating = watched.find(
@@ -332,7 +339,7 @@ const MovieDetails = ({ selectedId, onCloseMovie, onAddMovie, watched }) => {
     imdbRating,
   } = movieDetails;
 
-  const [avgRating, setAvgRating] = useState(0);
+  //const [avgRating, setAvgRating] = useState(0);
 
   const handleAdd = () => {
     const newMovieList = {
@@ -343,6 +350,7 @@ const MovieDetails = ({ selectedId, onCloseMovie, onAddMovie, watched }) => {
       imdbRating: Number(imdbRating),
       runtime: Number(imdbRating.slice(" ").at(0)),
       userRating,
+      countRatingDesicion: countRef,
     };
     onAddMovie(newMovieList);
     onCloseMovie();
